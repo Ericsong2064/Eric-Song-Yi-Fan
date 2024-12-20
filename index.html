@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <canvas id="myChart"></canvas>
+      </div>
+</body>
+<script>
+    const arrayOfTemps=[];
+    const arrayOfYear=[];
+    async function getData() {
+        //gets the data from the csv
+        const response = await fetch("2012_SAT_Results_20241220.csv");
+        const data = await response.text();
+        const rows = data.split("\n").slice(1);
+        rows.forEach((elem) => {
+          const row = elem.split(",");
+          const school = row[1]
+          const SAT = parseFloat(row[3])+parseFloat(row[4]);
+          arrayOfYear.push(school)
+          arrayOfTemps.push(SAT)
+        });
+      }
+    async function setData(){
+        const ctx = await document.getElementById('myChart');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: arrayOfYear,
+            datasets: [{
+              label: '2012 Average SAT score',
+              data: arrayOfTemps,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: false
+              }
+            }
+          }
+        });
+    }
+//end of functions
+//call the function to test if you see the image on the left in the console
+getData();
+setData();
+</script>
+</html>
